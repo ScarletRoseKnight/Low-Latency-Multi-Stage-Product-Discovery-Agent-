@@ -6,7 +6,15 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 본 리포지토리는 고처리량 및 비대칭형 멀티 스테이지 시맨틱 상품 검색을 구현한 엔터프라이즈급 아키텍처 청사진입니다. 분리된 데이터 라이프사이클과 최신 MLOps 도구를 활용하여, 엄격한 트랜잭션 및 지연 시간 제약 조건(<250ms p99 SLA) 하에서 페타바이트 규모의 이커머스 카탈로그를 처리하는 방법을 모델링합니다.
 
 ---
+## 📂 Project Structure / 디렉토리 구조
 
+```text
+├── 📂 orchestration/     # Airflow ETL Pipeline DAG
+├── 📂 pipelines/         # Spark Batch Processing & Ray Distributed Embedding
+├── 📂 core/              # AsyncIO Gateway & Triton High-Throughput Client
+├── 📂 infrastructure/    # DB Abstraction Interface (Qdrant & Milvus Impl)
+└── 📂 deployment/        # Kubernetes / Kubeflow Manifests & Triton Models config.pbtxt
+```
 ## 🏗️ System Topology & Dataflow / 시스템 구조도
 
 ```text
@@ -78,12 +86,6 @@ The system employs a multi-stage approach to balance latency boundaries (<250ms 
 
 ---
 
-📂 Project Structure / 디렉토리 구조
-├── 📂 orchestration/     # Airflow ETL Pipeline DAG
-├── 📂 pipelines/         # Spark Batch Processing & Ray Distributed Embedding
-├── 📂 core/              # AsyncIO Gateway & Triton High-Throughput Client
-├── 📂 infrastructure/    # DB Abstraction Interface (Qdrant & Milvus Impl)
-└── 📂 deployment/        # Kubernetes / Kubeflow Manifests & Triton Models config.pbtxt
 
 🛠️ Technology Stack & Purpose / 핵심 기술 및 활용 목적CategoryComponentPurpose / 활용 목적ML & SearchPyTorch, Cross-Encoder고정밀 문맥 매칭 및 검색 결과 실시간 재정렬 연산Vector EngineQdrant, Milvus컴퓨트-스토리지 분리 구조 기반 대규모 벡터 인덱싱Data PlatformApache Spark, Ray페타바이트급 데이터 정제(ETL) 및 분산 GPU 임베딩 생성Serving/MLOpsTriton, Kubernetes, AirflowDynamic Batching을 활용한 모델 추론 가속 및 배포 자동화
 
