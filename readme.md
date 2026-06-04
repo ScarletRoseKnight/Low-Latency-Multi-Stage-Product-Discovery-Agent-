@@ -48,6 +48,17 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 ```
 
 ---
+## 🔍 Search Architecture Pipeline / 검색 파이프라인 구조
+
+The system employs a multi-stage approach to balance latency boundaries (<250ms p99 SLA) with high retrieval accuracy:
+
+1. **Stage-1: Pre-filtered Vector Search**
+   * The Core Agent Gateway receives user input, processes tokens, and queries the Qdrant/Milvus cluster.
+   * Filters and isolates candidate subsets rapidly from massive vector spaces.
+
+2. **Stage-2: High-Precision Re-ranking**
+   * Top candidates are passed to Triton Inference Server.
+   * A heavy Cross-Encoder model runs intense sequence-pair interactions to output final optimized product rankings.
 
 ## 🚀 Key Architectural Pillars / 핵심 아키텍처 요소
 
@@ -62,20 +73,6 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 * **Model Serving:** Powered by Triton Inference Server executing optimized PyTorch and Cross-Encoder models.
 * **Vector Indexing:** Uses a Qdrant or Milvus cluster to perform high-recall, pre-filtered Stage-1 vector search.
 
----
-
-## 🔍 Search Architecture Pipeline / 검색 파이프라인 구조
-
-The system employs a multi-stage approach to balance latency boundaries (<250ms p99 SLA) with high retrieval accuracy:
-
-1. **Stage-1: Pre-filtered Vector Search**
-   * The Core Agent Gateway receives user input, processes tokens, and queries the Qdrant/Milvus cluster.
-   * Filters and isolates candidate subsets rapidly from massive vector spaces.
-
-2. **Stage-2: High-Precision Re-ranking**
-   * Top candidates are passed to Triton Inference Server.
-   * A heavy Cross-Encoder model runs intense sequence-pair interactions to output final optimized product rankings.
-
 ## 🛠️ Technology Stack / 기술 스택
 
 * **Data Lifecycle:** Apache Spark, Apache Airflow, BigQuery, SQL
@@ -84,10 +81,8 @@ The system employs a multi-stage approach to balance latency boundaries (<250ms 
 * **Vector DB Ecosystem:** Qdrant, Milvus
 * **Infrastructure:** Kubernetes Cluster
 
----
-
-
 🛠️ Technology Stack & Purpose / 핵심 기술 및 활용 목적CategoryComponentPurpose / 활용 목적ML & SearchPyTorch, Cross-Encoder고정밀 문맥 매칭 및 검색 결과 실시간 재정렬 연산Vector EngineQdrant, Milvus컴퓨트-스토리지 분리 구조 기반 대규모 벡터 인덱싱Data PlatformApache Spark, Ray페타바이트급 데이터 정제(ETL) 및 분산 GPU 임베딩 생성Serving/MLOpsTriton, Kubernetes, AirflowDynamic Batching을 활용한 모델 추론 가속 및 배포 자동화
 
 🎯 Production SLA / 성능 목표1단계 벡터 검색 지연 시간: < 15ms (HNSW index pre-filtered)2단계 Triton 모델 추론 지연 시간: < 35ms (Dynamic batching queued)코어 게이트웨이 최종 p99 목표 지연 시간: < 120ms
+---
 
