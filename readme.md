@@ -13,12 +13,12 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
  [ Raw E-Commerce Logs / Catalogs (SQL / BigQuery) ]
                         │
                         ▼ (Scheduled Orchestration via Apache Airflow)
- ┌────────────────────────────────────────────────────────┐
+ ┌──────────────────────────────────────────────────────────┐
  │ 1. DATA & TRAINING LIFECYCLE (Ray & Apache Spark Cluster)│
- │  - Spark: Petabyte ETL, clickstream aggregation, SQL   │
- │  - Ray: Distributed PyTorch / Transformers Embedding   │
- │  - MLflow: Hyperparameter tracking & Model Registry   │
- └────────────────────────────────────────────────────────┘
+ │  - Spark: Petabyte ETL, clickstream aggregation, SQL     │
+ │  - Ray: Distributed PyTorch / Transformers Embedding     │
+ │  - MLflow: Hyperparameter tracking & Model Registry      │
+ └──────────────────────────────────────────────────────────┘
                         │
          ┌──────────────┴──────────────┐
          ▼                             ▼
@@ -26,7 +26,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
          │                             │
          ▼                             ▼ (CD Manifests via Kubeflow)
  ┌────────────────────────────────────────────────────────┐
- │ 2. LOW-LATENCY PRODUCTION RUNTIME (Kubernetes Cluster)  │
+ │ 2. LOW-LATENCY PRODUCTION RUNTIME (Kubernetes Cluster) │
  │                                                        │
  │   ┌──────────────────┐      ┌──────────────────────┐   │
  │   │ Triton Inf. Serv.│ ◄──► │ Core Agent Gateway   │   │
@@ -34,7 +34,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
  │   │ - Cross-Encoder  │      │ - HuggingFace Tokens │   │
  │   └──────────────────┘      └──────────────────────┘   │
  │            ▲                                           │
- │            └───────────► [ Qdrant / Milvus Cluster ]  │
+ │            └───────────► [ Qdrant / Milvus Cluster ]   │
  │                          (Stage-1 Pre-filtered Search) │
  └────────────────────────────────────────────────────────┘
 ```
