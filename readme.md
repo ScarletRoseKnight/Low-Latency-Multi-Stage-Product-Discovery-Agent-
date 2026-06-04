@@ -37,7 +37,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
  │            └───────────► [ Qdrant / Milvus Cluster ]  │
  │                          (Stage-1 Pre-filtered Search) │
  └────────────────────────────────────────────────────────┘
-```[cite: 1]
+```
 
 ---
 
