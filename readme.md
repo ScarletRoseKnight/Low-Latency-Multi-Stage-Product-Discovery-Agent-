@@ -63,6 +63,13 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 | **Data Platform** | Apache Spark, Ray | 페타바이트급 데이터 정제(ETL) 및 분산 GPU 임베딩 생성 자동화 |
 | **Serving / MLOps** | Triton, Kubernetes, Airflow | Dynamic Batching을 활용한 모델 추론 가속 및 파이프라인 배포 자동화 |
 ---
+
+## 🎯 Production SLA / 성능 목표
+
+* **Stage-1 벡터 검색 지연 시간:** `< 15ms` (HNSW index pre-filtered)
+* **Stage-2 Triton 모델 추론 지연 시간:** `< 35ms` (Dynamic batching queued)
+* **코어 게이트웨이 최종 p99 목표 지연 시간:** `< 120ms`
+  
 ## 🔍 Search Pipeline Architecture / 검색 파이프라인 구조
 
 The system employs a multi-stage approach to balance latency boundaries (<250ms p99 SLA) with high retrieval accuracy:
@@ -87,10 +94,4 @@ The system employs a multi-stage approach to balance latency boundaries (<250ms 
 * **Core Agent Gateway:** Built with asynchronous Python (AsyncIO) and Hugging Face Tokenizers for ultra-fast, non-blocking request handling.
 * **Model Serving:** Powered by Triton Inference Server executing optimized PyTorch and Cross-Encoder models.
 * **Vector Indexing:** Uses a Qdrant or Milvus cluster to perform high-recall, pre-filtered Stage-1 vector search.
-
-## 🎯 Production SLA / 성능 목표
-
-* **Stage-1 벡터 검색 지연 시간:** `< 15ms` (HNSW index pre-filtered)
-* **Stage-2 Triton 모델 추론 지연 시간:** `< 35ms` (Dynamic batching queued)
-* **코어 게이트웨이 최종 p99 목표 지연 시간:** `< 120ms`
 ---
