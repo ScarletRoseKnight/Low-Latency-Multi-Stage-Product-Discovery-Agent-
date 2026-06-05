@@ -1,7 +1,7 @@
 # 쿠팡 초저지연 멀티 스테이지 상품 검색 에이전트
 본 리포지토리는 고처리량 및 비대칭형 멀티 스테이지 시맨틱 상품 검색을 구현한 엔터프라이즈급 아키텍처 청사진입니다. 분리된 데이터 라이프사이클과 최신 MLOps 도구를 활용하여, 엄격한 트랜잭션 및 지연 시간 제약 조건(<250ms p99 SLA) 하에서 페타바이트 규모의 이커머스 카탈로그를 처리하는 방법을 모델링합니다.
 
-## 1. 📂 Directory Structure / 디렉토리 구조
+## 1. 📂 디렉토리 구조 /  Directory Structure
 
 ```text
 ├── 📂 core/              # AsyncIO Gateway & Triton High-Throughput Client
@@ -10,7 +10,7 @@
 ├── 📂 orchestration/     # Airflow ETL Pipeline DAG
 └── 📂 pipelines/         # Spark Batch Processing & Ray Distributed Embedding
 ```
-## 2. 🔍 Component Breakdown & Core Engineering Facts / 각 파일의 명확한 역할과 엔지니어링 팩트
+## 2. 🔍 각 파일의 명확한 역할과 엔지니어링 팩트 / Component Breakdown & Core Engineering Facts 
 
 가. 실시간 트래픽 처리 및 복합 비즈니스 랭킹 결합 / Real-Time Traffic Orchestration & Multi-Objective Ranking | (`core/`)
 
@@ -54,7 +54,7 @@
   * **Engineering Fact:** Follows clean object-oriented architecture patterns. The Qdrant driver implements a dedicated gRPC channel multiplexing approach via **`prefer_grpc=True`** to drastically curtail connection layer handshake overheads. Simultaneously, the Milvus implementation leverages aggressive in-memory index caching (`collection.load()`) to enforce high-recall pre-filtering logic natively inside the HNSW storage segments, accelerating Stage-1 query execution times.
  
 
-* **`config.pbtxt` (Triton Inference Engine Specification / Triton 추론 엔진 설정)**
+* **`config.pbtxt` (Triton 추론 엔진 설정 / Triton Inference Engine Specification )**
   
   * **한글:** 연산 비용이 높은 무거운 Cross-Encoder 모델을 가속하기 위해 하위 하드웨어 자원 매핑 및 요청 최적화 전략을 제어합니다.
   * **핵심 팩트:** 활성화된 GPU 자원 풀 전체에 복수의 모델 인스턴스를 병렬 배치(`count: 2`)하여 하드웨어 처리량 한계를 확장했습니다. 테일 레이턴시(Tail Latency)를 엄격히 통제하면서 하드웨어 자원을 100% 소모하기 위해 최대 대기 제한을 5ms로 묶은 **다이내믹 배칭(Dynamic Batching, `max_queue_delay_microseconds: 5000`)** 프로덕션 규격을 선언, 실시간 SLA 한계를 침범하지 않고 요청들을 고속 행렬 연산으로 취합 처리합니다.
@@ -62,7 +62,7 @@
   * **Engineering Fact:** Scales hardware throughput limits by deploying concurrent model instances mapped across an active GPU pool (`count: 2`). To extract optimal hardware saturation while managing tail latencies, it enables **Dynamic Batching** constrained by a maximum execution delay threshold of 5 milliseconds (`max_queue_delay_microseconds: 5000`), allowing the engine to aggregate individual inference calls into compact matrices without violating real-time SLA bounds.
   
 
-* **`kubernetes-spec.yaml` & `kubeflow_pipeline.py` (Cloud-Native Orchestration & Resiliency / 가용성 및 파이프라인 자동화)**
+* **`kubernetes-spec.yaml` & `kubeflow_pipeline.py` (가용성 및 파이프라인 자동화 / Cloud-Native Orchestration & Resiliency)**
   
   * **한글:** 인프라 명세를 코드로 관리(IaC)하여 시스템의 상용 고가용성을 유지하고, 데이터 지속 재학습 및 모델 라이프사이클 관리를 자동화합니다.
   * **핵심 팩트:** 웹 레이어의 회복 탄력성을 보장하기 위해 최초 10개의 파드로 시작해 대규모 트래픽 폭주 시 **최대 200개 레플리카 파드까지 자동 확장되는 HPA(HorizontalPodAutoscaler)** 인프라 사양을 선언했습니다. 무중단 배포 스케줄러 가동 시 트래픽 진입을 안전하게 제어하는 `readinessProbe` 헬스체크 훅을 연동했으며, 검증 지연을 막기 위해 지정된 메트릭 임계치 기반의 자동화된 Kubeflow 파이프라인 지속 검증 코드를 명시했습니다.
@@ -70,7 +70,7 @@
   * **Engineering Fact:** Guarantees web tier resiliency by specifying an active multi-pod deployment baseline paired with a native **HorizontalPodAutoscaler (HPA)** configured to automatically elastic-scale from a minimum of 10 up to 200 replicas during massive traffic spikes. Employs predictive `readinessProbe` hooks for traffic control during continuous deployment cycles, while matching the system with Kubeflow pipeline code designed to automate model validation and continuous evaluation thresholds.
  ---
 
-## 3. 🏗️ System Topology & Dataflow / 시스템 구조도
+## 3. 🏗️ 시스템 구조도 / System Topology & Dataflow
 
 ```text
  [ Raw E-Commerce Logs / Catalogs (SQL / BigQuery) ]
@@ -101,7 +101,7 @@
  │                          (Stage-1 Pre-filtered Search) │
  └────────────────────────────────────────────────────────┘
 ```
-## 4. 🛠️ Technology Stack / 기술 스택
+## 4. 🛠️ 기술 스택 /Technology Stack 
 
 * **Data Lifecycle:** Apache Spark, Apache Airflow, BigQuery, SQL
 * **Distributed AI / MLOps:** Ray, PyTorch, Hugging Face Transformers, MLflow, Kubeflow
@@ -109,7 +109,7 @@
 * **Vector DB Ecosystem:** Qdrant, Milvus
 * **Infrastructure:** Kubernetes Cluster
 
-## 5. 🛠️ Technology Stack & Purpose / 핵심 기술 및 활용 목적
+## 5. 🛠️ 핵심 기술 및 활용 목적 / Technology Stack & Purpose
 
 | Category | Component | Purpose / 활용 목적 |
 | :--- | :--- | :--- |
@@ -119,13 +119,13 @@
 | **Serving / MLOps** | Triton, Kubernetes, Airflow | Dynamic Batching을 활용한 모델 추론 가속 및 파이프라인 배포 자동화 |
 ---
 
-## 6. 🎯 Production SLA / 성능 목표
+## 6. 🎯 성능 목표 / Production SLA 
 
 * **Stage-1 벡터 검색 지연 시간:** `< 15ms` (HNSW index pre-filtered)
 * **Stage-2 Triton 모델 추론 지연 시간:** `< 35ms` (Dynamic batching queued)
 * **코어 게이트웨이 최종 p99 목표 지연 시간:** `< 120ms`
   
-## 7. 🔍 Search Pipeline Architecture / 검색 파이프라인 구조
+## 7. 🔍 검색 파이프라인 구조 / Search Pipeline Architecture
 
 The system employs a multi-stage approach to balance latency boundaries (<250ms p99 SLA) with high retrieval accuracy:
 
@@ -137,7 +137,7 @@ The system employs a multi-stage approach to balance latency boundaries (<250ms 
    * Top candidates are passed to Triton Inference Server.
    * A heavy Cross-Encoder model runs intense sequence-pair interactions to output final optimized product rankings.
 
-## 8. 🚀 Key Architectural Pillars / 핵심 아키텍처 요소
+## 8. 🚀 핵심 아키텍처 요소 / Key Architectural Pillars 
 
 가. Data & Training Lifecycle (데이터 및 학습 라이프사이클)
 * **Orchestration:** Managed via Apache Airflow scheduling to automate workloads from raw SQL/BigQuery data logs.
