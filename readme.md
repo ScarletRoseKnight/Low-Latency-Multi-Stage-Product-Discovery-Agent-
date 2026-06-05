@@ -12,8 +12,7 @@
 ```
 ## 2. 🔍 Component Breakdown & Core Engineering Facts / 각 파일의 명확한 역할과 엔지니어링 팩트
 
-가. 실시간 트래픽 처리 및 복합 비즈니스 랭킹 결합 (`core/`)
-Real-Time Traffic Orchestration & Multi-Objective Ranking
+가. 실시간 트래픽 처리 및 복합 비즈니스 랭킹 결합 | Real-Time Traffic Orchestration & Multi-Objective Ranking | (`core/`)
 
 * **`gateway.py` (Asynchronous ASGI Web Server Engine / ASGI 웹서버 엔진)**
   * **한글:** 외부 클라이언트의 검색 요청을 `FastAPI` 비동기(`async/await`) 루프 체계로 수신하여, 스레드 블로킹 없이 수천 건의 동시 연결을 안정적으로 처리합니다.
@@ -29,8 +28,7 @@ Real-Time Traffic Orchestration & Multi-Objective Ranking
   * **(EN):** Orchestrates the encoding phase and handles strict inference protocol communications with the centralized Triton Inference cluster.
   * **Engineering Fact:** Mitigates severe CPU bottlenecks by integrating HuggingFace's Rust-backed Fast Tokenizer to compute contextual string sequences in real time. To eliminate JSON overhead and string serialization costs over HTTP, it utilizes **`binary_data=True`** parameters to streamline raw byte tensor packets. Critically, to preserve strict p99 latency SLAs and guard against cascading downstream queue timeouts, it encapsulates a **Circuit Breaker** fallback layer governed by a definitive 50ms constraint (`timeout=0.05`), returning zeroed arrays if the server encounters cluster degradation.
   
-### 나. 백엔드 빅데이터 플랫폼 및 주기적 인덱싱 파이프라인 (`pipelines/` & `orchestration/`)
-### Analytical Data Lake & Pipeline Orchestration
+### 나. 백엔드 빅데이터 플랫폼 및 주기적 인덱싱 파이프라인 | Analytical Data Lake & Pipeline Orchestration | (`pipelines/` & `orchestration/`)
 
 * **`data_etl_spark.py` (Enterprise-Scale Spark Pipeline / 대규모 스케일 Spark 파이프라인)**
   * **한글:** 사내 데이터 레이크에 축적된 대규모 분산 유저 클릭스트림 로그 덤프와 원천 상품 카탈로그를 정제하여 대용량 분석 피처 스토어를 빌드합니다.
@@ -46,8 +44,7 @@ Real-Time Traffic Orchestration & Multi-Objective Ranking
   * **(EN):** Enforces definitive data dependency workflows, orchestrating the periodic index update cycles for the entire system.
   * **Engineering Fact:** Configures explicit task sequence parameters (`execute_spark_etl >> execute_distributed_embeddings`) using the `KubernetesPodOperator`. This structural design ensures that the high-recall Ray multi-GPU embedding cluster is only initialized after the upstream PySpark data lake synchronization job terminates with an absolute success state, maintaining transactional consistency across the vector storage tier.
 
-### 다. 스토리지 격리 추상화 및 클라우드 네이티브 배포 레이어 (`infrastructure/` & `deployment/`)
-### Isolated Storage Abstraction & Cloud-Native Deployment 
+### 다. 스토리지 격리 추상화 및 클라우드 네이티브 배포 레이어 | Isolated Storage Abstraction & Cloud-Native Deployment | (`infrastructure/` & `deployment/`)
 
 * **`base_store.py`, `qdrant_impl.py`, `milvus_impl.py` (Vector Store Layer Abstraction / 벡터 스토어 레이어 추상화)**
   
