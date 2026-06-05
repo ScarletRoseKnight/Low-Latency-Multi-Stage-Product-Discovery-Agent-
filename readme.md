@@ -15,9 +15,9 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 ├── 📂 orchestration/     # Airflow ETL Pipeline DAG
 └── 📂 pipelines/         # Spark Batch Processing & Ray Distributed Embedding
 ```
-## 🔍 Component Breakdown & Core Engineering Facts / 각 파일의 명확한 역할과 엔지니어링 팩트
+2.🔍 Component Breakdown & Core Engineering Facts / 각 파일의 명확한 역할과 엔지니어링 팩트
 
-### 1. Real-Time Traffic Orchestration & Multi-Objective Ranking (`core/`)
+### 가. Real-Time Traffic Orchestration & Multi-Objective Ranking (`core/`)
 ### 실시간 트래픽 처리 및 복합 비즈니스 랭킹 결합
 
 * **`gateway.py` (Asynchronous ASGI Web Server Engine / ASGI 웹서버 엔진)**
@@ -34,7 +34,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 
 ---
 
-### 2. Analytical Data Lake & Pipeline Orchestration (`pipelines/` & `orchestration/`)
+### 나. Analytical Data Lake & Pipeline Orchestration (`pipelines/` & `orchestration/`)
 ### 백엔드 빅데이터 플랫폼 및 주기적 인덱싱 파이프라인
 
 * **`data_etl_spark.py` (Enterprise-Scale Spark Pipeline / 대규모 스케일 Spark 파이프라인)**
@@ -51,7 +51,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 
 ---
 
-### 3. Isolated Storage Abstraction & Cloud-Native Deployment (`infrastructure/` & `deployment/`)
+### 다. Isolated Storage Abstraction & Cloud-Native Deployment (`infrastructure/` & `deployment/`)
 ### 스토리지 격리 추상화 및 클라우드 네이티브 배포 레이어
 
 * **`base_store.py`, `qdrant_impl.py`, `milvus_impl.py` (Vector Store Layer Abstraction / 벡터 스토어 레이어 추상화)**
@@ -72,9 +72,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
   * **Engineering Fact:** Guarantees web tier resiliency by specifying an active multi-pod deployment baseline paired with a native **HorizontalPodAutoscaler (HPA)** configured to automatically elastic-scale from a minimum of 10 up to 200 replicas during massive traffic spikes. Employs predictive `readinessProbe` hooks for traffic control during continuous deployment cycles, while matching the system with Kubeflow pipeline code designed to automate model validation and continuous evaluation thresholds.
   * **핵심 팩트:** 웹 레이어의 회복 탄력성을 보장하기 위해 최초 10개의 파드로 시작해 대규모 트래픽 폭주 시 **최대 200개 레플리카 파드까지 자동 확장되는 HPA(HorizontalPodAutoscaler)** 인프라 사양을 선언했습니다. 무중단 배포 스케줄러 가동 시 트래픽 진입을 안전하게 제어하는 `readinessProbe` 헬스체크 훅을 연동했으며, 검증 지연을 막기 위해 지정된 메트릭 임계치 기반의 자동화된 Kubeflow 파이프라인 지속 검증 코드를 명시했습니다.
 
-이 코드는 "대규모 커머스 환경에서 지연 시간 SLA(<120ms p99)를 사수하면서도, ML 모델의 정밀도와 플랫폼의 비즈니스 수익(광고/CTR)을 동시에 극대화해 낸 최고 수준의 아키텍처 실전 진본"입니다.
-
-## 🏗️ System Topology & Dataflow / 시스템 구조도
+3. 🏗️ System Topology & Dataflow / 시스템 구조도
 
 ```text
  [ Raw E-Commerce Logs / Catalogs (SQL / BigQuery) ]
@@ -105,7 +103,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
  │                          (Stage-1 Pre-filtered Search) │
  └────────────────────────────────────────────────────────┘
 ```
-## 🛠️ Technology Stack / 기술 스택
+4. 🛠️ Technology Stack / 기술 스택
 
 * **Data Lifecycle:** Apache Spark, Apache Airflow, BigQuery, SQL
 * **Distributed AI / MLOps:** Ray, PyTorch, Hugging Face Transformers, MLflow, Kubeflow
@@ -113,7 +111,7 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 * **Vector DB Ecosystem:** Qdrant, Milvus
 * **Infrastructure:** Kubernetes Cluster
 
-## 🛠️ Technology Stack & Purpose / 핵심 기술 및 활용 목적
+5. 🛠️ Technology Stack & Purpose / 핵심 기술 및 활용 목적
 
 | Category | Component | Purpose / 활용 목적 |
 | :--- | :--- | :--- |
@@ -123,25 +121,25 @@ An enterprise-grade blueprint and proof-of-concept architecture for high-through
 | **Serving / MLOps** | Triton, Kubernetes, Airflow | Dynamic Batching을 활용한 모델 추론 가속 및 파이프라인 배포 자동화 |
 ---
 
-## 🎯 Production SLA / 성능 목표
+6. 🎯 Production SLA / 성능 목표
 
 * **Stage-1 벡터 검색 지연 시간:** `< 15ms` (HNSW index pre-filtered)
 * **Stage-2 Triton 모델 추론 지연 시간:** `< 35ms` (Dynamic batching queued)
 * **코어 게이트웨이 최종 p99 목표 지연 시간:** `< 120ms`
   
-## 🔍 Search Pipeline Architecture / 검색 파이프라인 구조
+7. 🔍 Search Pipeline Architecture / 검색 파이프라인 구조
 
 The system employs a multi-stage approach to balance latency boundaries (<250ms p99 SLA) with high retrieval accuracy:
 
-1. **Stage-1: Pre-filtered Vector Search**
+가. **Stage-1: Pre-filtered Vector Search**
    * The Core Agent Gateway receives user input, processes tokens, and queries the Qdrant/Milvus cluster.
    * Filters and isolates candidate subsets rapidly from massive vector spaces.
 
-2. **Stage-2: High-Precision Re-ranking**
+나. **Stage-2: High-Precision Re-ranking**
    * Top candidates are passed to Triton Inference Server.
    * A heavy Cross-Encoder model runs intense sequence-pair interactions to output final optimized product rankings.
 
-## 🚀 Key Architectural Pillars / 핵심 아키텍처 요소
+8. 🚀 Key Architectural Pillars / 핵심 아키텍처 요소
 
 ### 1. Data & Training Lifecycle (데이터 및 학습 라이프사이클)
 * **Orchestration:** Managed via Apache Airflow scheduling to automate workloads from raw SQL/BigQuery data logs.
