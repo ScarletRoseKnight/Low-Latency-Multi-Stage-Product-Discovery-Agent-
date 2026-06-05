@@ -36,7 +36,7 @@
 * **`data_etl_spark.py` (Enterprise-Scale Spark Pipeline / 대규모 스케일 Spark 파이프라인)**
   * **한글:** 사내 데이터 레이크에 축적된 대규모 분산 유저 클릭스트림 로그 덤프와 원천 상품 카탈로그를 정제하여 대용량 분석 피처 스토어를 빌드합니다.
   * **핵심 팩트:** 초고처리량 분산 집계 연산(`groupBy().agg()`)을 통해 과거 노출, 클릭, 구매 이벤트 시퀀스를 활용 가능한 피처 지표로 정제합니다. 분산 데이터 처리 중 발생하기 쉬운 예외 상황을 방어하기 위해, `F.when().otherwise()` 연산식을 사용하여 CTR 및 전환율 계산 시 **0 나누기 에러(Division-by-Zero)를 원천 차단**합니다. 또한, 조인 과정에서 터지기 쉬운 데이터 스큐(Data Skew) 현상을 방지하기 위해 명시적인 `na.fill()` 처리 후 카테고리별 파티셔닝 Parquet 형태로 안전하게 분산 적재합니다.
-  * **영문 (EN):** Processes massive distributed user clickstream log dumps and raw catalogs across the company’s data lake to build aggregated analytical feature stores.
+  * **(EN):** Processes massive distributed user clickstream log dumps and raw catalogs across the company’s data lake to build aggregated analytical feature stores.
   * **Engineering Fact:** Performs high-throughput data aggregation (`groupBy().agg()`) to synthesize historical impression, click, and purchase event sequences into actionable metrics. Engineered to handle large-scale distributed edge cases, it utilizes declarative `F.when().otherwise()` matrices to fundamentally block **Division-by-Zero runtime exceptions** when computing CTR or conversion rates. It explicitly applies `na.fill()` rules to neutralize severe data skew issues before writing out highly optimized Category-partitioned Parquet files back to storage.
   
 
@@ -44,7 +44,7 @@
   
   * **한글:** 데이터 간의 명확한 의존성 워크플로우를 강제하며, 시스템 전체의 주기적인 벡터 인덱싱 업데이트 사이클을 조율합니다.
   * **핵심 팩트:** `KubernetesPodOperator` 환경에서 작업 간 선후 관계 파라미터(`execute_spark_etl >> execute_distributed_embeddings`)를 명확히 구성했습니다. 이를 통해 업스트림의 PySpark 데이터 정제 작업이 완벽히 정합성을 유지하며 정상 종료된 경우에만, 다운스트림인 Ray 멀티 GPU 분산 임베딩 클러스터가 기동되도록 강제하여 벡터 스토리지 전체의 트랜잭션 일관성을 보장합니다.
-  * **영문 (EN):** Enforces definitive data dependency workflows, orchestrating the periodic index update cycles for the entire system.
+  * **(EN):** Enforces definitive data dependency workflows, orchestrating the periodic index update cycles for the entire system.
   * **Engineering Fact:** Configures explicit task sequence parameters (`execute_spark_etl >> execute_distributed_embeddings`) using the `KubernetesPodOperator`. This structural design ensures that the high-recall Ray multi-GPU embedding cluster is only initialized after the upstream PySpark data lake synchronization job terminates with an absolute success state, maintaining transactional consistency across the vector storage tier.
 
 ### 다. 스토리지 격리 추상화 및 클라우드 네이티브 배포 레이어 (`infrastructure/` & `deployment/`)
@@ -54,7 +54,7 @@
   
   * **한글:** 코어 에이전트 라우팅 로직이 특정 데이터베이스 클라이언트 SDK 명세에 종속되지 않도록 영속성 레이어의 결합도를 완벽히 분리(Decoupling)합니다.
   * **핵심 팩트:** 객체지향 인터페이스 패턴을 엄격히 준수합니다. Qdrant 구현체는 커넥션 레이어의 핸드셰이크 오버헤드를 제로에 가깝게 줄이기 위해 **`prefer_grpc=True`** 설정을 통한 gRPC 채널 멀티플렉싱을 적용했습니다. Milvus 구현체는 상용 트래픽 대응을 위해 세그먼트를 RAM 영역에 영구 상주시키는 고속 캐싱 기법(`collection.load()`)을 연동하여, HNSW 그래프 레이어 내부에서 데이터베이스 레벨의 Pre-filtering 1단계 검색 속도를 극대화했습니다.
-  * **영문 (EN):** Acts as the persistent decoupled layer isolating core routing logic from specialized database client SDK specifications.
+  * **(EN):** Acts as the persistent decoupled layer isolating core routing logic from specialized database client SDK specifications.
   * **Engineering Fact:** Follows clean object-oriented architecture patterns. The Qdrant driver implements a dedicated gRPC channel multiplexing approach via **`prefer_grpc=True`** to drastically curtail connection layer handshake overheads. Simultaneously, the Milvus implementation leverages aggressive in-memory index caching (`collection.load()`) to enforce high-recall pre-filtering logic natively inside the HNSW storage segments, accelerating Stage-1 query execution times.
  
 
@@ -62,7 +62,7 @@
   
   * **한글:** 연산 비용이 높은 무거운 Cross-Encoder 모델을 가속하기 위해 하위 하드웨어 자원 매핑 및 요청 최적화 전략을 제어합니다.
   * **핵심 팩트:** 활성화된 GPU 자원 풀 전체에 복수의 모델 인스턴스를 병렬 배치(`count: 2`)하여 하드웨어 처리량 한계를 확장했습니다. 테일 레이턴시(Tail Latency)를 엄격히 통제하면서 하드웨어 자원을 100% 소모하기 위해 최대 대기 제한을 5ms로 묶은 **다이내믹 배칭(Dynamic Batching, `max_queue_delay_microseconds: 5000`)** 프로덕션 규격을 선언, 실시간 SLA 한계를 침범하지 않고 요청들을 고속 행렬 연산으로 취합 처리합니다.
-  * **영문 (EN):** Configures low-level hardware resource mapping and request optimization strategies for heavy Cross-Encoder models.
+  * **(EN):** Configures low-level hardware resource mapping and request optimization strategies for heavy Cross-Encoder models.
   * **Engineering Fact:** Scales hardware throughput limits by deploying concurrent model instances mapped across an active GPU pool (`count: 2`). To extract optimal hardware saturation while managing tail latencies, it enables **Dynamic Batching** constrained by a maximum execution delay threshold of 5 milliseconds (`max_queue_delay_microseconds: 5000`), allowing the engine to aggregate individual inference calls into compact matrices without violating real-time SLA bounds.
   
 
@@ -70,7 +70,7 @@
   
   * **한글:** 인프라 명세를 코드로 관리(IaC)하여 시스템의 상용 고가용성을 유지하고, 데이터 지속 재학습 및 모델 라이프사이클 관리를 자동화합니다.
   * **핵심 팩트:** 웹 레이어의 회복 탄력성을 보장하기 위해 최초 10개의 파드로 시작해 대규모 트래픽 폭주 시 **최대 200개 레플리카 파드까지 자동 확장되는 HPA(HorizontalPodAutoscaler)** 인프라 사양을 선언했습니다. 무중단 배포 스케줄러 가동 시 트래픽 진입을 안전하게 제어하는 `readinessProbe` 헬스체크 훅을 연동했으며, 검증 지연을 막기 위해 지정된 메트릭 임계치 기반의 자동화된 Kubeflow 파이프라인 지속 검증 코드를 명시했습니다.
-  * **영문 (EN):** Defines infrastructure-as-code manifests to maintain high availability and automated model lifecycle governance.
+  * **(EN):** Defines infrastructure-as-code manifests to maintain high availability and automated model lifecycle governance.
   * **Engineering Fact:** Guarantees web tier resiliency by specifying an active multi-pod deployment baseline paired with a native **HorizontalPodAutoscaler (HPA)** configured to automatically elastic-scale from a minimum of 10 up to 200 replicas during massive traffic spikes. Employs predictive `readinessProbe` hooks for traffic control during continuous deployment cycles, while matching the system with Kubeflow pipeline code designed to automate model validation and continuous evaluation thresholds.
  ---
 
