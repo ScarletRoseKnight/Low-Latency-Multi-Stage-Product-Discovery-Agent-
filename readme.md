@@ -1,6 +1,8 @@
 # 쿠팡 초저지연 멀티 스테이지 상품 검색 에이전트
 본 리포지토리는 고처리량 및 비대칭형 멀티 스테이지 시맨틱 상품 검색을 구현한 엔터프라이즈급 아키텍처 청사진입니다. 분리된 데이터 라이프사이클과 최신 MLOps 도구를 활용하여, 엄격한 트랜잭션 및 지연 시간 제약 조건(<250ms p99 SLA) 하에서 페타바이트 규모의 이커머스 카탈로그를 처리하는 방법을 모델링합니다.
 
+This repository is an enterprise‑grade architecture blueprint that implements high‑throughput, asymmetric multi‑stage semantic product search. It models how to process a petabyte‑scale e‑commerce catalog under strict transaction and latency constraints (<250 ms p99 SLA) by leveraging a separated data lifecycle and modern MLOps tooling.
+
 ## 1. 📂 디렉토리 구조 /  Directory Structure
 
 ```text
